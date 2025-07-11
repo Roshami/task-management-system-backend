@@ -52,4 +52,35 @@ export async function addTask(req, res) {
   }
 }
 
+export async function getTasks(req, res) {
+  console.log(req.user);
+  if(req.user.isAdmin){
+    try {
+      const tasks = await Tasks.find(({ companyName: req.user.companyName }));
+      res.status(200).json(tasks);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  }
 
+  if(req.user.isPersonal){
+    if(req.user.companyName === "Personal"){
+      try {
+        const tasks = await Tasks.find(({ assigned_to: req.user.email }));
+        res.status(200).json(tasks);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+      }
+    }
+  }
+
+  try {
+    const tasks = await Tasks.find({ assigned_to: req.user.email }, { companyName: req.user.companyName });
+    res.status(200).json(tasks);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+}

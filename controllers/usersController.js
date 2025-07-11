@@ -40,6 +40,7 @@ export function loginUser(req, res) {
               email: user.email,
               isAdmin: user.isAdmin,
               isPersonal: user.isPersonal,
+              companyName: user.companyName,
             },
             process.env.JWT_SECRET
           );
