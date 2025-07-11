@@ -84,3 +84,25 @@ export async function getTasks(req, res) {
     res.status(500).json({ message: 'Server error' });
   }
 }
+
+export async function updateTask(req, res) {
+  try {
+    const taskId = req.params.id;
+    const updatedTask = await Tasks.findByIdAndUpdate(taskId, req.body, { new: true });
+    res.status(200).json(updatedTask);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+}
+
+export async function deleteTask(req, res) {
+  try {
+    const taskId = req.params.id;
+    await Tasks.findByIdAndDelete(taskId);
+    res.status(200).json({ message: 'Task deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+}
