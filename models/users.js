@@ -19,6 +19,16 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: false,
     },
+    isPersonal: {
+        type: Boolean,
+        required: true,
+        default: true,
+    },
+    companyName: {
+        type: String,
+        required: true,
+        default: "Personal",
+    },
 }, {
     timestamps: true,
 });

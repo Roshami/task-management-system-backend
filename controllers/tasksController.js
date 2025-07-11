@@ -1,0 +1,55 @@
+import Tasks from "../models/tasks.js";
+
+export async function addTask(req, res) {
+    console.log(req.body);
+  console.log(req.user);
+  if (req.user.isAdmin) {
+    try {
+      const taskData = {
+        created_by: req.user.email,
+        assigned_to: req.body.assigned_to,
+        status: req.body.status,
+        priority: req.body.priority,
+        start_date: req.body.start_date,
+        end_date: req.body.end_date,
+        description: req.body.description,
+        title: req.body.title,
+        subtasks: req.body.subtasks,
+      };
+
+      const task = new Tasks(taskData);
+      await task.save();
+
+      res.status(201).json(task);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  }
+
+  if (req.user.isPersonal) {
+    try {
+      const taskData = {
+        created_by: req.user.email,
+        assigned_to: req.user.email,
+        status: req.body.status,
+        priority: req.body.priority,
+        start_date: req.body.start_date,
+        end_date: req.body.end_date,
+        description: req.body.description,
+        title: req.body.title,
+        subtasks: req.body.subtasks,
+      };
+
+      const task = new Tasks(taskData);
+      await task.save();
+
+      res.status(201).json(task);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  }
+}
+
+
