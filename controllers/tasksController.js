@@ -1,7 +1,7 @@
-import Tasks from "../models/tasks.js";
+import Tasks from '../models/tasks.js';
 
 export async function addTask(req, res) {
-    console.log(req.body);
+  console.log(req.body);
   console.log(req.user);
   if (req.user.isAdmin) {
     try {
@@ -54,9 +54,9 @@ export async function addTask(req, res) {
 
 export async function getTasks(req, res) {
   console.log(req.user);
-  if(req.user.isAdmin){
+  if (req.user.isAdmin) {
     try {
-      const tasks = await Tasks.find(({ companyName: req.user.companyName }));
+      const tasks = await Tasks.find({ companyName: req.user.companyName });
       res.status(200).json(tasks);
     } catch (error) {
       console.error(error);
@@ -64,10 +64,10 @@ export async function getTasks(req, res) {
     }
   }
 
-  if(req.user.isPersonal){
-    if(req.user.companyName === "Personal"){
+  if (req.user.isPersonal) {
+    if (req.user.companyName === 'Personal') {
       try {
-        const tasks = await Tasks.find(({ assigned_to: req.user.email }));
+        const tasks = await Tasks.find({ assigned_to: req.user.email });
         res.status(200).json(tasks);
       } catch (error) {
         console.error(error);
@@ -77,7 +77,10 @@ export async function getTasks(req, res) {
   }
 
   try {
-    const tasks = await Tasks.find({ assigned_to: req.user.email }, { companyName: req.user.companyName });
+    const tasks = await Tasks.find(
+      { assigned_to: req.user.email },
+      { companyName: req.user.companyName }
+    );
     res.status(200).json(tasks);
   } catch (error) {
     console.error(error);
@@ -88,8 +91,8 @@ export async function getTasks(req, res) {
 export async function updateTask(req, res) {
   try {
     const taskId = req.params.id;
-    const updatedTask = await Tasks.findByIdAndUpdate(taskId, req.body, { new: true });
-    res.status(200).json(updatedTask);
+    const updatedTask = await Tasks.updateOne({ _id: taskId }, req.body);
+    res.status(200).json("updated successfully");
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
