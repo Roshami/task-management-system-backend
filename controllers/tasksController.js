@@ -100,10 +100,14 @@ export async function updateTask(req, res) {
 }
 
 export async function deleteTask(req, res) {
+  console.log(req.params.id);
+
   try {
     const taskId = req.params.id;
-    await Tasks.findByIdAndDelete(taskId);
+    console.log('Task ID:', taskId);
+    await Tasks.deleteOne({ _id: taskId });
     res.status(200).json({ message: 'Task deleted successfully' });
+    console.log('Task deleted successfully');
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
