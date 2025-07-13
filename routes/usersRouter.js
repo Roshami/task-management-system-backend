@@ -1,5 +1,5 @@
 import express from "express";
-import { deleteUser, getUsers, loginUser, registerUser, updateUser } from "../controllers/usersController.js";
+import { deleteUser, getUsers, loginUser, registerUser, sendOTP, updateUser, verifyOTP } from "../controllers/usersController.js";
 
 
 
@@ -10,5 +10,7 @@ usersRouter.post("/", loginUser)
 usersRouter.get("/", getUsers)
 usersRouter.put("/:id", updateUser)
 usersRouter.delete("/:id", deleteUser)
+usersRouter.get("/sendOTP", sendOTP)
+usersRouter.post("/verifyEmail", verifyOTP)
 
 export default usersRouter;
