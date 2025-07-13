@@ -10,6 +10,11 @@ const taskSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    companyName: {
+      type: String,
+      required: true,
+      default: 'Personal',
+    },
     title: {
       type: String,
       required: true,

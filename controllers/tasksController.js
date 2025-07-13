@@ -8,6 +8,7 @@ export async function addTask(req, res) {
       const taskData = {
         created_by: req.user.email,
         assigned_to: req.body.assigned_to,
+        companyName: req.body.companyName,
         status: req.body.status,
         priority: req.body.priority,
         start_date: req.body.start_date,
