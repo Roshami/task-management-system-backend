@@ -1,8 +1,6 @@
 import Tasks from '../models/tasks.js';
 
 export async function addTask(req, res) {
-  console.log(req.body);
-  console.log(req.user);
   if (req.user.isAdmin) {
     try {
       const taskData = {
@@ -54,7 +52,6 @@ export async function addTask(req, res) {
 }
 
 export async function getTasks(req, res) {
-  console.log(req.user);
   if (req.user.isAdmin) {
     try {
       const tasks = await Tasks.find({ companyName: req.user.companyName });
@@ -93,7 +90,7 @@ export async function updateTask(req, res) {
   try {
     const taskId = req.params.id;
     const updatedTask = await Tasks.updateOne({ _id: taskId }, req.body);
-    res.status(200).json("updated successfully");
+    res.status(200).json('updated successfully');
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -101,8 +98,6 @@ export async function updateTask(req, res) {
 }
 
 export async function deleteTask(req, res) {
-  console.log(req.params.id);
-
   try {
     const taskId = req.params.id;
     console.log('Task ID:', taskId);

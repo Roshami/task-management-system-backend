@@ -64,7 +64,6 @@ export function loginUser(req, res) {
             token: token,
             user: user,
           });
-          console.log(token);
         } else {
           res.status(401).json({ message: 'Invalid password' });
         }
@@ -77,7 +76,6 @@ export function loginUser(req, res) {
 }
 
 export function getUsers(req, res) {
-  console.log(req.user);
   const companyName = req.user.companyName;
   try {
     Users.find({ companyName: companyName, isAdmin: false, isPersonal: false })
