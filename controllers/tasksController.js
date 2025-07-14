@@ -71,18 +71,18 @@ export async function getTasks(req, res) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
       }
+    } else {
+      try {
+        const tasks = await Tasks.find({
+          assigned_to: req.user.email,
+          companyName: req.user.companyName,
+        });
+        res.status(200).json(tasks);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+      }
     }
-  }
-
-  try {
-    const tasks = await Tasks.find(
-      { assigned_to: req.user.email },
-      { companyName: req.user.companyName }
-    );
-    res.status(200).json(tasks);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
   }
 }
 
