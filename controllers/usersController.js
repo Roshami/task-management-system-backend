@@ -191,3 +191,24 @@ export async function verifyOTP(req, res) {
     res.status(500).json({ message: 'Error verifying OTP' });
   }
 }
+
+export async function resetPassword(req, res) {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  try {
+    const user = await Users.findOne({ email: email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    return res.status(200).json({ message: 'Password reset successfully' });
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    return res.status(500).json({ message: 'Error resetting password' });
+  }
+}
