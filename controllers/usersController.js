@@ -3,6 +3,8 @@ import jwt from 'jsonwebtoken';
 import Users from '../models/users.js';
 import OTP from '../models/otp.js';
 import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const transport = nodemailer.createTransport({
   service: 'gmail',
@@ -11,7 +13,7 @@ const transport = nodemailer.createTransport({
   secure: false,
   auth: {
     user: 'thashmantharoshami@gmail.com',
-    pass: process.env.EMAIL_PASSWORD,
+    pass: process.env.AUTH_EMAIL,
   },
 });
 
@@ -128,13 +130,11 @@ export function deleteUser(req, res) {
 }
 
 export async function sendOTP(req, res) {
-  if (req.user == null) {
-    res.status(401).json({ message: 'User not found' });
+  if (!req.user) {
+    return res.status(401).json({ message: 'User not found' });
   }
 
-  // Generate a random 6-digit OTP
   const otp = Math.floor(100000 + Math.random() * 900000);
-
   const newOTP = new OTP({
     email: req.user.email,
     otp: otp,
@@ -142,9 +142,7 @@ export async function sendOTP(req, res) {
 
   try {
     await newOTP.save();
-    res.status(200).json({ message: 'OTP sent successfully' });
 
-    // Send the OTP to the user's email
     const message = {
       from: 'thashmantharoshami@gmail.com',
       to: req.user.email,
@@ -155,15 +153,15 @@ export async function sendOTP(req, res) {
     transport.sendMail(message, (error, info) => {
       if (error) {
         console.error('Error sending OTP:', error);
-        res.status(500).json({ message: 'Error sending OTP' });
+        return res.status(500).json({ message: 'Error sending OTP' });
       } else {
         console.log('OTP sent successfully:', info.response);
-        res.status(200).json({ message: 'OTP sent successfully' });
+        return res.status(200).json({ message: 'OTP sent successfully' });
       }
     });
   } catch (error) {
-    console.error('Error sending OTP:', error);
-    res.status(500).json({ message: 'Error sending OTP' });
+    console.error('Error saving OTP:', error);
+    return res.status(500).json({ message: 'Error saving OTP' });
   }
 }
 
@@ -175,22 +173,18 @@ export async function verifyOTP(req, res) {
   const code = req.body.code;
 
   try {
-    const otp = await OTP.findOne({ 
-      email: req.user.email, 
-      otp: code 
+    const otp = await OTP.findOne({
+      email: req.user.email,
+      otp: code,
     });
-    
-    if(otp == null) {
+
+    if (otp == null) {
       res.status(401).json({ message: 'Invalid OTP' });
-    } else{
+    } else {
       await OTP.deleteOne({ email: req.user.email });
 
-      await Users.updateOne(
-        { email: req.user.email },
-        { isVerified: true }
-      )
+      await Users.updateOne({ email: req.user.email }, { isVerified: true });
       res.status(200).json({ message: 'OTP verified successfully' });
-
     }
   } catch (error) {
     console.error('Error verifying OTP:', error);
