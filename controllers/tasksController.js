@@ -77,6 +77,10 @@ export async function getTasks(req, res) {
           assigned_to: req.user.email,
           companyName: req.user.companyName,
         });
+        console.log('Query Filter:', {
+          assigned_to: req.user.email,
+          companyName: req.user.companyName,
+        });
         res.status(200).json(tasks);
       } catch (error) {
         console.error(error);
